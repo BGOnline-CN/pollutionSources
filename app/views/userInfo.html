@@ -1,0 +1,143 @@
+<div ng-controller="UserInfoController">
+    <p class="bgo-panel-title">
+        <img ng-src="{{ headerPath + data.userInfo.header + '.png' }}" class="bgo-header-circle" alt="头像" style="margin-right: 5px;">
+        <span ng-bind="data.userInfo.nickname"></span>
+        <span ng-bind="'最近登录时间：' + (data.userInfo.login_time * 1000 | date: 'yyyy-MM-dd')" style="float: right;margin-top: 10px;"></span>
+    </p>
+    <div class="bgo-panel">
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="bgo-panel-title">
+                    用户资料
+                </div>
+                <form name="form" class="bgo-form" novalidate style="background-color: #ddd;">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="form-title">性别：</td>
+                                <td>
+                                    <span ng-if="data.userInfo.sex == 1">男</span>
+                                    <span ng-if="data.userInfo.sex == 2">女</span>
+                                    <span ng-if="data.userInfo.sex != 1 && data.userInfo.sex != 2">保密</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-title">状态：</td>
+                                <td>
+                                    <span variety val="{{ data.userInfo.is_locked }}" cfg="is_lockedCFG"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-title">联系方式：</td>
+                                <td ng-bind="data.userInfo.phone"></td>
+                            </tr>
+                            <tr>
+                                <td class="form-title">创建时间：</td>
+                                <td ng-bind="data.userInfo.create * 1000 | date: 'yyyy-MM-dd'"></td>
+                            </tr>
+                            <tr>
+                                <td class="form-title">我的上线：</td>
+                                <td>
+                                    <span ng-if="!data.parentUserData">无</span>
+                                    <a ng-if="data.parentUserData" ui-sref="app.slaveAndmaster" ng-click="goPage(data.parentUserData.user_id)" ng-bind="data.parentUserData.nickname"></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="col-xs-6">
+                <div class="bgo-panel-title">
+                    <span>用户仓库</span>
+                </div>
+                <form name="form" class="bgo-form" novalidate style="background-color: #F0984D;color: #fff;">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="form-title">小鸡数量：</td>
+                                <td ng-bind="data.depotData.chick_num"></td>
+                            </tr>
+                            <tr>
+                                <td class="form-title">鸡蛋数量：</td>
+                                <td ng-bind="data.depotData.egg_num"></td>
+                            </tr>
+                            <tr>
+                                <td class="form-title">小狗等级：</td>
+                                <td ng-bind="data.depotData.dog_level"></td>
+                            </tr>
+                            <tr>
+                                <td class="form-title">围栏等级：</td>
+                                <td ng-bind="data.depotData.fence_level"></td>
+                            </tr>
+                            <tr>
+                                <td class="form-title">一键打扫时间：</td>
+                                <td ng-bind="data.depotData.onekey_clean * 1000 | date: 'yyyy-MM-dd'"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="bgo-panel">
+        <div class="bgo-panel-title">
+            我的下线
+        </div>
+        <div class="bgo-panel-title" style="border: none;padding: 15px 15px 0 15px;">
+            <span class="noData" ng-if="!data.subUserData.length > 0">暂无下线</span>
+            <ul class="clearfix">
+                <li style="float: left;margin: 0 0 10px 10px;max-width: 60px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" ng-repeat="d in data.subUserData">
+                    <img ng-src="{{ headerPath + d.header + '.png' }}" 
+                         class="bgo-header-circle" 
+                         alt="头像" 
+                         title="{{ d.nickname }}"
+                         ui-sref="app.slaveAndmaster" 
+                         ng-click="goPage(d.user_id)">
+                    <p ng-bind="d.nickname"></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="bgo-panel">
+        <div class="bgo-panel-title">
+            <span>用户土地</span>
+        </div>
+        <table class="bgo-inner-table">
+            <thead>
+                <tr>
+                    <th>土地编号</th>
+                    <th>土地性质</th>
+                    <th>小鸡数量范围</th>
+                    <th>当前小鸡数</th>
+                    <th>历史鸡蛋数</th>
+                    <th>待收获鸡蛋</th>
+                    <th>剩余收蛋次数</th>
+                    <th>状态</th>
+                    <th>土地创建时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="!data.landData.length > 0" class="noData">
+                    <td colspan="9">暂无土地</td>
+                </tr>
+                <tr ng-repeat="d in data.landData">
+                    <td ng-bind="d.land_code"></td>
+                    <td>
+                        <span ng-if="d.type == 1" style="color: green;">绿土地</span>
+                        <span ng-if="d.type == 2" style="color: orange;">金土地</span>
+                    </td>
+                    <td ng-bind="d.chick_min + ' - ' + d.chick_max"></td>
+                    <td ng-bind="d.chick_num"></td>
+                    <td ng-bind="d.history_egg_num"></td>
+                    <td ng-bind="d.produce_egg_num"></td>
+                    <td ng-bind="d.is_gain"></td>
+                    <td>
+                        <span ng-if="d.is_open == 1">启用</span>
+                        <span ng-if="d.is_open == 0" style="color: #ccc;">没有启用</span>
+                    </td>
+                    <td ng-bind="d.create_time * 1000 | date: 'yyyy-MM-dd'"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

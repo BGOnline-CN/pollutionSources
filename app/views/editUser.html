@@ -1,0 +1,30 @@
+<div ng-controller="EditUserController">
+    <p>
+        <a ui-sref="app.userMgmt">用户列表</a>
+        >
+        <span ng-bind="data.userInfo.nickname"></span>
+    </p>
+    <div class="bgo-panel">
+        <div class="bgo-panel-title">
+            <span>修改密码</span>
+        </div>
+        <form name="form" class="bgo-form" novalidate>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="form-title">新密码：</td>
+                        <td>
+                            <input type="password" class="bgo-input" ng-model="param.password" placeholder="请输入新密码" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button class="btn btn-primary bgo-button" ng-click="save()">确定</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>

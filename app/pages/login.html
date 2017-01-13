@@ -1,0 +1,36 @@
+<div ng-controller="LoginController">
+    <div class="bgo-panel bgo-div-glass bgo-box-shadow" style="width: 500px;margin: 0 auto;margin-top: 150px;border: none;position: relative;">
+        <p style="text-align: center;margin: 0;font-size: 1.2em;font-weight: bold;">账号登录</p>
+        <form class="bgo-form" style="padding: 20px;z-index: 9999;" ng-submit="go()">
+            <table style="width: 300px; margin: 0 auto;">
+                <tbody>
+                    <tr>
+                        <td colspan="2">
+                            <input type="text" class="bgo-input" ng-model="param.user_name" style="width: 300px;" placeholder="用户名" autofocus="autofocus">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="password" class="bgo-input" ng-model="param.password" style="width: 300px;" placeholder="密码">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0;">
+                            <input type="checkbox" ng-model="param.isChecked">
+                            <span style="vertical-align: top;">记住我</span>
+                        </td>
+                        <td style="padding: 0;">
+                            <!--<a href="" style="float: right;">忘记密码?</a>-->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <button type="submit" class="btn btn-primary bgo-button" style="width: 100%; padding: 6px 12px;">登录</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+

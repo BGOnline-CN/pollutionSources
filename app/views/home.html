@@ -1,0 +1,29 @@
+<div ng-controller="HomeController">
+    <p>拆分基数线形图</p>
+    <div class="bgo-panel">
+        <ul class="bgo-control clearfix">
+            <li>
+                <div date-picker month="month" means="getData()"></div>
+            </li>
+        </ul>
+        <canvas class="chart chart-line"
+                chart-data="data.data"
+                chart-labels="data.labels"
+                chart-series="data.series">
+        </canvas>
+        <!--<table class="bgo-table">
+            <thead>
+                <tr>
+                    <th>拆分基数线形图</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        
+                    </td>
+                </tr>
+            </tbody>
+        </table>-->
+    </div>
+</div>

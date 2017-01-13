@@ -1,0 +1,20 @@
+<div ng-controller="BaseConfigController">
+    <p>基础配置</p>
+    <div class="bgo-panel">
+        <div class="bgo-panel-title">
+            <span>以下为系统基础配置项，填写之后将自动保存</span>
+        </div>
+        <form name="form" class="bgo-form" novalidate>
+            <table>
+                <tbody>
+                    <tr ng-repeat="d in data">
+                        <td class="form-title" ng-bind="d.name + '：'"></td>
+                        <td>
+                            <div input-auto-submit val="d.val" key="{{ d.key }}" means="set()"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>

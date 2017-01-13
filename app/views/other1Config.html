@@ -1,0 +1,29 @@
+<div ng-controller="Other1ConfigController">
+    <p>小狗升级配置</p>
+    <div class="bgo-panel">
+        <div class="bgo-panel-title">
+            <span>以下为小狗升级配置项，填写之后别忘保存哦~</span>
+            <button class="btn btn-success bgo-button" style="margin-left: 20px;" ng-click="save()">保存</button>
+        </div>
+        <table class="bgo-table" style="width: 400px;">
+            <thead>
+                <tr>
+                    <th>等级</th>
+                    <th>所需小鸡数量</th>
+                    <th>升级成功率 = 1/？</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="d in data">
+                    <td class="form-title" ng-bind="'等级' + d.level"></td>
+                    <td>
+                        <div num-select num="d.chickNum"></div>
+                    </td>
+                    <td>
+                        <div num-select num="d.successRatio"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

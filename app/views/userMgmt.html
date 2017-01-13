@@ -1,0 +1,62 @@
+<div ng-controller="UserMgmtController">
+    <p>用户账号管理</p>
+    <div class="bgo-panel">
+        <ul class="bgo-control clearfix">
+            <li>
+                <div class="bgo-search">
+                    <form ng-submit="search()">
+                        <input type="text" class="bgo-input" ng-model="param.tname" placeholder="请输入用户姓名">
+                        <button type="submit" class="btn btn-primary bgo-button">查找</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+        <table class="bgo-table">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>头像</th>
+                    <th>昵称</th>
+                    <th>性别</th>
+                    <th>电话</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                    <th>最近登录时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="!data.data.length > 0" class="noData">
+                    <td colspan="9">暂无数据</td>
+                </tr>
+                <tr ng-repeat="d in data.data">
+                    <td ng-bind="$index + 1"></td>
+                    <td>
+                        <img class="bgo-header-circle" ng-src="{{ headerPath + d.header + '.png' }}" alt="">
+                    </td>
+                    <td ng-bind="d.nickname"></td>
+                    <td>
+                        <span ng-if="d.sex == 1">男</span>
+                        <span ng-if="d.sex == 2">女</span>
+                        <span ng-if="d.sex != 1 && d.sex !=2">女</span>
+                    </td>
+                    <td ng-bind="d.phone"></td>
+                    <td>
+                        <div bgo-select val="{{ d.is_locked }}" list="bgoSelectList" means="setIsLocked(d.user_id)"></div>
+                    </td>
+                    <td ng-bind="d.create * 1000 | date: 'yyyy-MM-dd hh:mm:ss'"></td>
+                    <td ng-bind="d.login_time * 1000 | date: 'yyyy-MM-dd hh:mm:ss'"></td>
+                    <td>
+                        <button type="button" class="btn btn-info bgo-button" ng-click="goPage(d.user_id)">详情</button>
+                        <button type="button" class="btn btn-primary bgo-button" ng-click="edit(d.user_id)">编辑</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9">
+                        <div paging total-page="totalpage" current-page="current_page" get-data="getData()"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
