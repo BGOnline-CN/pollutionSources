@@ -744,11 +744,11 @@ input[type=checkbox]:checked + .check-box::before,
 	right: 20px;
 	z-index: 999;
 	cursor: pointer;
-	color: rgba(211, 211, 211, 0);
+	color: rgba(0, 0, 0, 0.5);
 	font-size: 30px;
 }
 .map-ctrl:hover {
-	color: rgba(233, 233, 233, 0);
+	color: rgba(0, 0, 0, 1);
 }
 .zoom-out {
 	bottom: 110px;
