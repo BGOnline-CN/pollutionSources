@@ -1,0 +1,66 @@
+<div ng-controller="PolluteMgmtController">
+    <p>污染源列表</p>
+    <div class="bgo-panel">
+        <ul class="bgo-control clearfix">
+            <li>
+                <div class="bgo-search">
+                    <form ng-submit="search()">
+                        <input type="text" class="bgo-input" ng-model="param.title" placeholder="请输入污染源标题">
+                        <button type="submit" class="btn btn-primary bgo-button">查找</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+        <table class="bgo-table">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>标题</th>
+                    <th>图片</th>
+                    <th>分类</th>
+                    <th>描述</th>
+                    <th>等级</th>
+                    <th>审核</th>
+                    <th>提交人信息</th>
+                    <th>提交时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="!data.data.length > 0" class="noData">
+                    <td colspan="10">暂无数据</td>
+                </tr>
+                <tr ng-repeat="d in data.data">
+                    <td ng-bind="$index + 1"></td>
+                    <td ng-bind="d.title"></td>
+                    <td>
+                        <img class="bgo-header" ng-src="{{ rootImgUrl + d.Image.data[0].img }}" title="查看相册" ng-click="getAlbum(d.Image)">
+                    </td>
+                    <td ng-bind="d.cat_name"></td>
+                    <td title="{{ (d.content | limitTo: 20) + '...'}}">
+                        <div class="txtOver" style="width: 100px;" ng-bind="d.content"></div>
+                    </td>
+                    <td ng-bind="d.level"></td>
+                    <td>
+                        <div bgo-select val="{{ d.is_show }}" list="bgoSelectList" means="setIsShow(d.pollute_id)"></div>
+                    </td>
+                    <td>
+                        <span ng-bind="d.city"></span> - 
+                        <span ng-bind="d.company_name"></span> - 
+                        <span ng-bind="d.tname"></span>
+                    </td>
+                    <td ng-bind="d.add_time * 1000 | date: 'yyyy-MM-dd'"></td>
+                    <td>
+                        <button type="button" class="btn btn-info bgo-button" ng-click="goPage(d.pollute_id)">详情</button>
+                        <button type="button" class="btn btn-danger bgo-button" ng-click="remove(d.pollute_id)">删除</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="10">
+                        <div paging total-page="totalpage" current-page="current_page" get-data="getData()"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

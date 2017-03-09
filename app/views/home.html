@@ -1,29 +1,18 @@
 <div ng-controller="HomeController">
-    <p>拆分基数线形图</p>
+    <p>监控中心</p>
     <div class="bgo-panel">
-        <ul class="bgo-control clearfix">
+        <!--<ul class="bgo-control clearfix">
             <li>
                 <div date-picker month="month" means="getData()"></div>
             </li>
-        </ul>
-        <canvas class="chart chart-line"
-                chart-data="data.data"
-                chart-labels="data.labels"
-                chart-series="data.series">
-        </canvas>
-        <!--<table class="bgo-table">
-            <thead>
-                <tr>
-                    <th>拆分基数线形图</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        
-                    </td>
-                </tr>
-            </tbody>
-        </table>-->
+        </ul>-->
+        <iframe id="ifr" width="100%" scrolling="no" frameborder="0"></iframe>
     </div>
+    <script>
+        ifr.src = 'control.html?random=' + (new Date().getTime());
+        $('#ifr').on("load",function() {
+            var _height = $(document).height() - 160;
+            $('#ifr').height(_height);
+        });
+    </script>
 </div>

@@ -8,32 +8,27 @@
   },
   {
     "sref": "app.home",
-    "icon": "",
-    "translate": "首页"
+    "icon": "fa fa-group",
+    "translate": "监控中心"
+  },
+  {
+    "sref": "app.polluteMgmt",
+    "icon": "fa fa-group",
+    "translate": "污染源管理"
+  },
+  {
+    "sref": "app.sortMgmt",
+    "icon": "fa fa-group",
+    "translate": "分类管理"
   },
   {
     "sref": "app.userMgmt",
     "icon": "fa fa-group",
-    "translate": "用户管理",
+    "translate": "成员管理",
     "submenu": [
       {
         "sref": "app.userMgmt",
-        "translate": "用户账号管理"
-      }
-    ]
-  },
-  {
-    "sref": "app.baseConfig",
-    "icon": "fa fa-cogs",
-    "translate": "系统配置",
-    "submenu": [
-      {
-        "sref": "app.baseConfig",
-        "translate": "基础配置"
-      },
-      {
-        "sref": "app.other1Config",
-        "translate": "小狗升级配置"
+        "translate": "成员列表"
       }
     ]
   }

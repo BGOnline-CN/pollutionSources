@@ -140,6 +140,11 @@ header {
     border-radius: 50%;
     display: inline-block;
 }
+.bgo-header {
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+}
 
 
 /* table */
@@ -855,4 +860,12 @@ a.loginClose:hover {
 }
 .datePicker li button i {
     color: #7895AF;
+}
+
+
+/* 文字超出显示 */
+.txtOver {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

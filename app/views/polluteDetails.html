@@ -1,0 +1,183 @@
+<div ng-controller="PolluteDetailsController">
+    <p>污染源详情</p>
+    <div class="bgo-panel">
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="bgo-panel-title">
+                    水污染
+                </div>
+                <form name="form" class="bgo-form" novalidate>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="form-title" style="width: 100px;">标题：</td>
+                                <td ng-bind="data.title"></td>
+                            </tr>
+                            <tr>
+                                <td class="form-title" style="width: 100px;">所属分类：</td>
+                                <td ng-bind="data.cat_name"></td>
+                            </tr>
+                            <tr>
+                                <td class="form-title" style="width: 100px;">审核：</td>
+                                <td>
+                                    <div bgo-select val="{{ data.is_show }}" list="bgoSelectList" means="setIsShow(data.pollute_id)"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-title" style="width: 100px;vertical-align: text-top;">污染描述：</td>
+                                <td ng-bind="data.content"></td>
+                            </tr>
+                            <tr>
+                                <td class="form-title" style="width: 100px;">污染等级：</td>
+                                <td>
+                                    <ng-rate-it ng-model="data.level" read-only="true"  resetable="false" style="float: left;"></ng-rate-it>
+                                    <span style="margin-left: 10px;color: red;" ng-if="data.level <= 2">严重污染</span>
+                                    <span style="margin-left: 10px;color: orange;" ng-if="data.level <= 4 && data.level > 2">改善中</span>
+                                    <span style="margin-left: 10px;color: green;" ng-if="data.level > 4">治理有效</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-title" style="width: 100px;">创建人：</td>
+                                <td>
+                                    <span ng-bind="data.tname"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-title" style="width: 100px;">创建时间：</td>
+                                <td ng-bind="data.create_time * 1000 | date: 'yyyy-MM-dd hh:ss'"></td>
+                            </tr>
+                            <tr>
+                                <td class="form-title" style="width: 100px;">污染源地址：</td>
+                                <td>
+                                    <span ng-bind="data.address"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="col-xs-6">
+                <div class="bgo-panel-title">
+                    <span>所在位置</span>
+                </div>
+                <div id="map" style="margin-top: 15px;height: 430px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="bgo-panel">
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="bgo-panel-title">
+                    污染源评估
+                </div>
+                <form name="form" class="bgo-form" novalidate>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="form-title">评估：</td>
+                                <td>
+                                    <ng-rate-it ng-model="param.level" resetable="false" style="float: left;"></ng-rate-it>
+                                    <span style="margin-left: 10px;color: red;" ng-if="param.level <= 2">严重污染</span>
+                                    <span style="margin-left: 10px;color: orange;" ng-if="param.level <= 3 && param.level > 2">改善中</span>
+                                    <span style="margin-left: 10px;color: green;" ng-if="param.level > 4">治理有效</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-title">说明：</td>
+                                <td>
+                                    <input type="text" class="bgo-input" ng-model="param.explain" placeholder="" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="form-title"></td>
+                                <td><button type="button" class="btn btn-primary bgo-button" ng-click="assessAdd()">提交</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="col-xs-6">
+                <div class="bgo-panel-title">
+                    <span ng-bind="'评估列表 共' + assessList.total + '条'"></span>
+                </div>
+                <table class="bgo-inner-table">
+                    <tr>
+                        <th>等级</th>
+                        <th>说明</th>
+                        <th>评估人</th>
+                        <th>评估时间</th>
+                    </tr>
+                    <tr ng-if="!assessList.data.length > 0" class="noData">
+                        <td colspan="4">暂无数据</td>
+                    </tr>
+                    <tr ng-repeat="d in assessList.data">
+                        <td ng-bind="d.level"></td>
+                        <td ng-bind="d.explain"></td>
+                        <td ng-bind="d.tname"></td>
+                        <td ng-bind="d.add_time * 1000 | date: 'yyyy-MM-dd hh:ss'"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <div paging total-page="totalpage" current-page="current_page" get-data="getAssessList()"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="bgo-panel">
+        <div class="bgo-panel-title">
+            污染源图片
+        </div>
+        <div class="bgo-panel-title" style="border: none;padding: 15px 15px 0 15px;">
+            <span class="noData" ng-if="!data.Image.data.length > 0">暂无图片</span>
+            <ul class="clearfix">
+                <li style="float: left;margin: 0 10px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" ng-repeat="d in data.Image.data">
+                    <img ng-src="{{ rootUrl + d.img }}" class="bgo-header" style="width: 80px;height: 80px;" ng-click="getAlbum(data.Image, $index)">
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--<div class="bgo-panel">
+        <div class="bgo-panel-title">
+            <span>用户土地</span>
+        </div>
+        <table class="bgo-inner-table">
+            <thead>
+                <tr>
+                    <th>土地编号</th>
+                    <th>土地性质</th>
+                    <th>小鸡数量范围</th>
+                    <th>当前小鸡数</th>
+                    <th>历史鸡蛋数</th>
+                    <th>待收获鸡蛋</th>
+                    <th>剩余收蛋次数</th>
+                    <th>状态</th>
+                    <th>土地创建时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="!data.landData.length > 0" class="noData">
+                    <td colspan="9">暂无土地</td>
+                </tr>
+                <tr ng-repeat="d in data.landData">
+                    <td ng-bind="d.land_code"></td>
+                    <td>
+                        <span ng-if="d.type == 1" style="color: green;">绿土地</span>
+                        <span ng-if="d.type == 2" style="color: orange;">金土地</span>
+                    </td>
+                    <td ng-bind="d.chick_min + ' - ' + d.chick_max"></td>
+                    <td ng-bind="d.chick_num"></td>
+                    <td ng-bind="d.history_egg_num"></td>
+                    <td ng-bind="d.produce_egg_num"></td>
+                    <td ng-bind="d.is_gain"></td>
+                    <td>
+                        <span ng-if="d.is_open == 1">启用</span>
+                        <span ng-if="d.is_open == 0" style="color: #ccc;">没有启用</span>
+                    </td>
+                    <td ng-bind="d.create_time * 1000 | date: 'yyyy-MM-dd'"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>-->
+</div>

@@ -1,0 +1,79 @@
+<div ng-controller="SortMgmtController">
+    <p>分类管理</p>
+    <div class="bgo-panel">
+        <div class="bgo-panel-title">
+            <span>新增分类</span>
+        </div>
+        <form name="form" class="bgo-form" novalidate>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="form-title">分类名称：</td>
+                        <td>
+                            <input type="text" class="bgo-input" ng-model="param.cat_name" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-title">分类说明：</td>
+                        <td>
+                            <input type="text" class="bgo-input" ng-model="param.explain" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form-title">分类类型：</td>
+                        <td>
+                            <select class="bgo-select" required ng-model="param.type" ng-init="param.type = 1">
+                                <option value="1">污染源</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button class="btn btn-primary bgo-button" ng-click="add()">添加</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <div class="bgo-panel">
+        <div class="bgo-panel-title">
+            <span>分类列表</span>
+        </div>
+        <table class="bgo-table" style="margin-top: 30px;">
+            <thead>
+                <tr>
+                    <th style="width: 20%;">分类名称</th>
+                    <th style="width: 20%;">分类简介</th>
+                    <th style="width: 20%;">分类类型</th>
+                    <th style="width: 20%;">排序</th>
+                    <th style="width: 20%;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-if="!data.data.length > 0" class="noData">
+                    <td colspan="5">暂无分类</td>
+                </tr>
+                <tr ng-repeat="d in data.data">
+                    <td ng-bind="d.cat_name"></td>
+                    <td ng-bind="d.explain" style="color: #aaa;"></td>
+                    <td>
+                        <div variety val="{{ d.type }}" cfg="cfg"></div>
+                    </td>
+                    <td>
+                        排序
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger bgo-button" ng-click="remove(d.cat_id)">删除</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <div paging total-page="totalpage" current-page="current_page" get-data="getData()"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

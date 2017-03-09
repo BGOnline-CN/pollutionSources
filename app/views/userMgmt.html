@@ -1,11 +1,72 @@
 <div ng-controller="UserMgmtController">
-    <p>用户账号管理</p>
+    <p>成员列表</p>
+    <div class="bgo-panel">
+        <div class="bgo-panel-title">
+            <span>添加成员</span>
+        </div>
+        <form name="form" class="bgo-form" novalidate>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="form-title">手机号：</td>
+                        <td>
+                            <input type="text" 
+                                   class="bgo-input" 
+                                   ng-model="param.phone" 
+                                   ng-pattern="/0?(13|14|15|17|18)[0-9]{9}/" 
+                                   maxlength="11"
+                                   required>
+                        </td>
+                    </tr>
+                    <tr ng-if="!user" class="noData">
+                        <td></td>
+                        <td>此账户不存在</td>
+                    </tr>
+                    <tr ng-if="user && param.phone">
+                        <td></td>
+                        <td>
+                            <table class="bgo-inner-table">
+                                <thead>
+                                    <tr>
+                                        <th>头像</th>
+                                        <th>昵称</th>
+                                        <th>电话</th>
+                                        <th>就职</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <img src="" alt="" class="bgo-header-circle">
+                                        </td>
+                                        <td ng-bind="user.nickname"></td>
+                                        <td ng-bind="user.phone"></td>
+                                        <td>
+                                            <span ng-bind="user.company_name"></span>
+                                            <span ng-if="!user.company_name">无</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button class="btn btn-primary bgo-button" ng-click="add(user.user_id)">添加</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
     <div class="bgo-panel">
         <ul class="bgo-control clearfix">
             <li>
                 <div class="bgo-search">
                     <form ng-submit="search()">
-                        <input type="text" class="bgo-input" ng-model="param.tname" placeholder="请输入用户姓名">
+                        <input type="text" class="bgo-input" ng-model="param.search" placeholder="请输入姓名、昵称、手机号">
                         <button type="submit" class="btn btn-primary bgo-button">查找</button>
                     </form>
                 </div>
@@ -20,7 +81,7 @@
                     <th>性别</th>
                     <th>电话</th>
                     <th>状态</th>
-                    <th>创建时间</th>
+                    <th>入职时间</th>
                     <th>最近登录时间</th>
                     <th>操作</th>
                 </tr>
@@ -32,7 +93,7 @@
                 <tr ng-repeat="d in data.data">
                     <td ng-bind="$index + 1"></td>
                     <td>
-                        <img class="bgo-header-circle" ng-src="{{ headerPath + d.header + '.png' }}" alt="">
+                        <img class="bgo-header-circle" ng-src="{{ rootImgUrl + d.header }}" alt="">
                     </td>
                     <td ng-bind="d.nickname"></td>
                     <td>
@@ -42,13 +103,13 @@
                     </td>
                     <td ng-bind="d.phone"></td>
                     <td>
-                        <div bgo-select val="{{ d.is_locked }}" list="bgoSelectList" means="setIsLocked(d.user_id)"></div>
+                        <div bgo-select val="{{ d.status }}" list="bgoSelectList" means="setStatus(d.user_id)"></div>
                     </td>
-                    <td ng-bind="d.create * 1000 | date: 'yyyy-MM-dd hh:mm:ss'"></td>
+                    <td ng-bind="d.add_time * 1000 | date: 'yyyy-MM-dd'"></td>
                     <td ng-bind="d.login_time * 1000 | date: 'yyyy-MM-dd hh:mm:ss'"></td>
                     <td>
-                        <button type="button" class="btn btn-info bgo-button" ng-click="goPage(d.user_id)">详情</button>
-                        <button type="button" class="btn btn-primary bgo-button" ng-click="edit(d.user_id)">编辑</button>
+                        <button type="button" class="btn btn-danger bgo-button" ng-click="remove(d.user_id)">删除</button>
+                        <!--<button type="button" class="btn btn-info bgo-button" ng-click="goPage(d.user_id)">详情</button>-->
                     </td>
                 </tr>
                 <tr>

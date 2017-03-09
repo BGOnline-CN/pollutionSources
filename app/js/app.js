@@ -3,7 +3,7 @@
  * BGONLINE WWW.BGONLINE.CN
  * 
  * Author: @bgonline
- * 2017-01-06
+ * 2017-01-13
  * 
  */
 
@@ -34,7 +34,9 @@ App.run(["$rootScope", "$state", "$stateParams",  '$window', '$templateCache', f
     $rootScope.$storage = $window.localStorage;
 
     // $rootScope.rootUrl = 'http://schoolms.thinktorch.cn/public/index.php/';
-    $rootScope.rootUrl = 'http://192.168.1.200/201612chick/phpcode/public/index.php/';
+    // $rootScope.rootImgUrl = 'http://schoolms.thinktorch.cn/201612PalmEP/';
+    $rootScope.rootUrl = 'http://192.168.1.200/201612PalmEP/public/';
+    $rootScope.rootImgUrl = 'http://192.168.1.200/201612PalmEP/public/';
     // 禁用模板缓存
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
         if (typeof(toState) !== 'undefined'){
@@ -43,7 +45,7 @@ App.run(["$rootScope", "$state", "$stateParams",  '$window', '$templateCache', f
     });
 
     $rootScope.app = {
-      name: '一文鸡后台管理系统',
+      name: '污染源管理系统',
       description: 'ThinkTorch',
       year: ((new Date()).getFullYear()),
       layout: {
@@ -95,7 +97,7 @@ function ($stateProvider, $locationProvider, $urlRouterProvider, helper) {
         abstract: true,
         templateUrl: helper.basepath('app.html'),
         controller: 'AppController',
-        resolve: helper.resolveFor('modernizr', 'icons', 'layer')
+        resolve: helper.resolveFor('modernizr', 'icons', 'layer', 'ngRateIt')
     })
     .state('app.submenu', {
         url: '/submenu',
@@ -109,25 +111,28 @@ function ($stateProvider, $locationProvider, $urlRouterProvider, helper) {
         resolve: helper.resolveFor('chart.js', 'html2canvas')
     })
 
+    .state('app.polluteMgmt', {
+        url: '/polluteMgmt',
+        title: '污染源管理',
+        templateUrl: helper.basepath('polluteMgmt.html')
+    })
+
+    .state('app.polluteDetails', {
+        url: '/polluteDetails',
+        title: '污染源详情',
+        templateUrl: helper.basepath('polluteDetails.html')
+    })
+
+     .state('app.sortMgmt', {
+        url: '/sortMgmt',
+        title: '分类管理',
+        templateUrl: helper.basepath('sortMgmt.html')
+    })
+    
     .state('app.userMgmt', {
         url: '/userMgmt',
         title: '用户管理',
         templateUrl: helper.basepath('userMgmt.html')
-    })
-    .state('app.userInfo', {
-        url: '/userInfo',
-        title: '会员详情',
-        templateUrl: helper.basepath('userInfo.html')
-    })
-    .state('app.slaveAndmaster', {
-        url: '/slaveAndmaster',
-        title: '会员详情',
-        templateUrl: helper.basepath('slaveAndmaster.html')
-    })
-    .state('app.editUser', {
-        url: '/editUser',
-        title: '编辑用户',
-        templateUrl: helper.basepath('editUser.html')
     })
     
 
@@ -137,12 +142,7 @@ function ($stateProvider, $locationProvider, $urlRouterProvider, helper) {
         templateUrl: helper.basepath('baseConfig.html')
     })
 
-    .state('app.other1Config', {
-        url: '/other1Config',
-        title: '小狗升级配置',
-        templateUrl: helper.basepath('other1Config.html')
-    })
-
+    
 
     // page
     .state('page', {
@@ -321,7 +321,9 @@ App
                                          'vendor/scrollbar/smooth-scrollbar.js',
                                          'vendor/scrollbar/angular-smooth-scrollbar.js']},
       { name: 'chart.js', files: ['vendor/angular-chart/Chart.js',
-                                  'vendor/angular-chart/angular-chart.js']}
+                                  'vendor/angular-chart/angular-chart.js']},
+      { name: 'ngRateIt', files: ['vendor/angular-rateit/ng-rateit.css',
+                                  'vendor/angular-rateit/ng-rateit.min.js']}
     ]
 
   })
@@ -1184,6 +1186,7 @@ App.service('Utils', ["$window", "APP_MEDIAQUERY", function($window, APP_MEDIAQU
  * 
  */
 
+
 App.directive('variety', function() { // 多状态选择器
     return {
         restrict: 'A', 
@@ -1647,6 +1650,65 @@ App.factory('ParamTransmit', function() {
 });
 
 
+App.factory('baiduMap', function() { // 百度地图服务
+    var map; //Map实例  
+    return {
+        map_init: function(lng, lat) {  
+            map = new BMap.Map("map");  
+            var point = new BMap.Point(lng, lat); // 设置地图默认中心点 中国
+            map.centerAndZoom(point, 5); // 初始化地图,设置中心点坐标和地图级别。
+            map.enableScrollWheelZoom(true); // 启用滚轮放大缩小 
+            
+            var ctrlNav = new window.BMap.NavigationControl({ // 向地图中添加缩放控件
+                anchor: BMAP_ANCHOR_TOP_LEFT,  
+                type: BMAP_NAVIGATION_CONTROL_LARGE  
+            });  
+            map.addControl(ctrlNav);  
+            
+            var ctrlOve = new window.BMap.OverviewMapControl({ // 向地图中添加缩略图控件  
+                anchor: BMAP_ANCHOR_BOTTOM_RIGHT,  
+                isOpen: 1  
+            });  
+            map.addControl(ctrlOve);  
+
+            var ctrlSca = new window.BMap.ScaleControl({ // 向地图中添加比例尺控件    
+                anchor: BMAP_ANCHOR_BOTTOM_LEFT  
+            });  
+            map.addControl(ctrlSca);   
+        },
+        addMarker: function(lng, lat, index) { // 添加标注
+            var myIcon = new BMap.Icon("http://api.map.baidu.com/img/markers.png",  
+                         new BMap.Size(23, 25), {  
+                             offset: new BMap.Size(10, 25),  
+                             imageOffset: new BMap.Size(0, 0 - index * 25)  
+                         });  
+            var point = new BMap.Point(lng, lat);
+            var marker = new BMap.Marker(point, { icon: myIcon });  
+            map.addOverlay(marker);  
+            return marker;
+        },
+        addInfoWindow: function(marker, poi) { // 添加信息窗口 
+            //pop弹窗标题  
+            var title = '<div style="font-weight:bold;color:#CE5521;font-size:14px">' + poi.name + '</div>';  
+            //pop弹窗信息  
+            var html = [];  
+            html.push('<table cellspacing="0" style="table-layout:fixed;width:100%;font:12px arial,simsun,sans-serif"><tbody>');  
+            html.push('<tr>');  
+            html.push('<td style="vertical-align:top;line-height:16px;width:38px;white-space:nowrap;word-break:keep-all">地址:</td>');  
+            html.push('<td style="vertical-align:top;line-height:16px">' + poi.address + ' </td>');  
+            html.push('</tr>');  
+            html.push('</tbody></table>');  
+            var infoWindow = new BMap.InfoWindow(html.join(""), { title: title, width: 200 });  
+
+            var openInfoWinFun = function () {  
+                marker.openInfoWindow(infoWindow);  
+            };  
+            marker.addEventListener("click", openInfoWinFun);  
+            return openInfoWinFun;  
+        }
+    } 
+
+}) 
 
 
 
@@ -1716,9 +1778,9 @@ App.controller('LoginController', ["$rootScope", "$scope", 'ConnectApi', '$state
                   localStorage.removeItem('remember');
               }
               var token = $scope.data.token;
-              var sysuser_id = $scope.data.sysuser_id;
+              var company_id = $scope.data.company_id;
               var tname = $scope.data.tname;
-              ParamTransmit.setParam({ token, sysuser_id, tname }, ['token', 'sysuser_id', 'tname']);
+              ParamTransmit.setParam({ token, company_id, tname }, ['token', 'company_id', 'tname']);
               $state.go('app.home');
           }
       }, function(x) { 
@@ -1732,7 +1794,7 @@ App.controller('LoginController', ["$rootScope", "$scope", 'ConnectApi', '$state
 
 
 // 首页
-App.controller('HomeController', ["$rootScope", "$scope", 'ConnectApi', '$state', 'ParamTransmit', '$timeout', function($rootScope, $scope, ConnectApi, $state, ParamTransmit, $timeout) {
+App.controller('HomeController', ["$rootScope", "$scope", 'ConnectApi', '$state', 'ParamTransmit', '$timeout', 'baiduMap', '$http', function($rootScope, $scope, ConnectApi, $state, ParamTransmit, $timeout, baiduMap, $http) {
 
     $scope.clock = {};
     var clockFunction = function() {
@@ -1742,18 +1804,298 @@ App.controller('HomeController', ["$rootScope", "$scope", 'ConnectApi', '$state'
         }, 1000)
     }
     clockFunction();
-    
+
     $rootScope.user.name = JSON.parse(sessionStorage.paramSession).tname;
     // $rootScope.user.company = JSON.parse(sessionStorage.paramSession).school_name;
 
+}]);
+
+
+/* 分类管理 */
+App.controller('SortMgmtController', ["$scope", 'ConnectApi', '$state', 'ParamTransmit', function($scope, ConnectApi, $state, ParamTransmit) {
+
+    $scope.cfg = [
+        { val: 1, name: '污染源' }
+    ]
+
     $scope.param = ParamTransmit.getParam();
+    $scope.current_page = 1;
     $scope.getData = function() {
         var index = layer.load(2);
-        $scope.param.date = $scope.month;
-        ConnectApi.start('post', 'admin/index/index', $scope.param).then(function(response) {
+        $scope.param.page = $scope.current_page;
+        ConnectApi.start('post', 'admin/classify/getclassify', $scope.param).then(function(response) {
+            var data = ConnectApi.data({ res: response, _index: index });
+            $scope.data = data.data;
+            $scope.totalpage = Math.ceil(data.data.total / data.data.per_page);
+        }, function(x) { 
+            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                layer.closeAll();
+            });
+        });
+    }
+    $scope.getData();
+  
+    $scope.add = function() {
+        var index = layer.load(2);
+        ConnectApi.start('post', 'admin/classify/addclassify', $scope.param).then(function(response) {
             var data = ConnectApi.data({ res: response, _index: index });
             if(data.code == 200) {
-                $scope.data = data.data;
+                layer.msg(data.msg);
+                $scope.getData();
+            }
+        }, function(x) { 
+            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                layer.closeAll();
+            });
+        });
+    }
+
+    $scope.remove = function(cat_id) {
+        var index = layer.load(2);
+        $scope.param.cat_id = cat_id;
+        ConnectApi.start('post', 'admin/classify/deleteclassify', $scope.param).then(function(response) {
+            var data = ConnectApi.data({ res: response, _index: index });
+            if(data.code == 200) {
+                layer.msg(data.msg);
+                $scope.getData();
+            }
+        }, function(x) { 
+            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                layer.closeAll();
+            });
+        });
+    }
+
+}]);
+
+
+
+
+/* 成员管理 */
+App.controller('UserMgmtController', ["$scope", 'ConnectApi', '$state', 'ParamTransmit', function($scope, ConnectApi, $state, ParamTransmit) {
+
+    $scope.param = ParamTransmit.getParam();
+
+    $scope.bgoSelectList = [
+        { val: 2, valName: '正常', color: 'green' },
+        { val: 3, valName: '离职', color: 'red' },
+    ]
+
+    $scope.current_page = 1;
+    $scope.getData = function() {
+        var index = layer.load(2);
+        $scope.param.page = $scope.current_page;
+        ConnectApi.start('post', 'admin/member/getstaff', $scope.param).then(function(response) {
+            var data = ConnectApi.data({ res: response, _index: index });
+            $scope.data = data.data;
+            $scope.totalpage = Math.ceil(data.data.total / data.data.per_page);
+        }, function(x) { 
+            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                layer.closeAll();
+            });
+        });
+    }
+    $scope.getData();
+
+    $scope.$watch('param.phone', function() {
+        if($scope.param.phone && $scope.form.$valid) {
+            ConnectApi.start('post', 'admin/member/getSysUser', $scope.param).then(function(response) {
+                var data = ConnectApi.data({ res: response });
+                $scope.user = data.data;
+            }, function(x) { 
+                layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                    layer.closeAll();
+                });
+            });
+        }
+    })
+
+
+    $scope.add = function(id) {
+        if(id) {
+            $scope.param.user_id = id;
+            var index = layer.load(2);
+            ConnectApi.start('post', 'admin/member/addstaff', $scope.param).then(function(response) {
+                var data = ConnectApi.data({ res: response, _index: index });
+                if(data.code == 200) {
+                    layer.msg(data.msg);
+                    $scope.getData();
+                }
+            }, function(x) { 
+                layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                    layer.closeAll();
+                });
+            });
+        }
+    }
+
+
+    $scope.search = function() {
+        $scope.getData();
+    }
+
+    $scope.setStatus = function(id) {
+        $scope.param = ParamTransmit.getParam();
+        $scope.param.user_id = id;
+        $scope.param.status = $scope.param.val;
+        ConnectApi.start('post', 'admin/member/setstaff', $scope.param).then(function(response) {
+            var data = ConnectApi.data({ res: response });
+            if(data.code == 200) {
+                $scope.getData();
+            }
+        }, function(x) { 
+            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                layer.closeAll();
+            });
+        });
+    }
+
+    $scope.remove = function(id) {
+        $scope.param.user_id = id;
+        var index = layer.load(2);
+        ConnectApi.start('post', 'admin/member/deletestaff', $scope.param).then(function(response) {
+            var data = ConnectApi.data({ res: response, _index: index });
+            if(data.code == 200) {
+                $scope.getData();
+            }
+        }, function(x) { 
+            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                layer.closeAll();
+            });
+        });
+    }
+
+    // $scope.goPage = function(id) {
+    //     $state.go('app.userInfo');
+    //     ParamTransmit.setParam({ user_id: id }, ['token', 'sysuser_id', 'tname'])
+    // }
+
+    // $scope.edit = function(id) {
+    //     $state.go('app.editUser');
+    //     ParamTransmit.setParam({ user_id: id }, ['token', 'sysuser_id', 'tname'])
+    // }
+
+}]);
+
+
+
+// 污染源管理 
+App.controller('PolluteMgmtController', ["$scope", '$rootScope', 'ConnectApi', '$state', 'ParamTransmit', function($scope, $rootScope, ConnectApi, $state, ParamTransmit) {
+
+    $scope.param = ParamTransmit.getParam();
+
+    $scope.bgoSelectList = [
+        { val: 'y', valName: '通过', color: 'green' },
+        { val: 'n', valName: '不通过', color: 'red' },
+    ]
+
+    $scope.current_page = 1;
+    $scope.getData = function() {
+        var index = layer.load(2);
+        $scope.param.page = $scope.current_page;
+        ConnectApi.start('post', 'admin/Stain/StainList', $scope.param).then(function(response) {
+            var data = ConnectApi.data({ res: response, _index: index });
+            $scope.data = data.data;
+            $scope.totalpage = Math.ceil(data.data.total / data.data.per_page);
+        }, function(x) { 
+            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                layer.closeAll();
+            });
+        });
+    }
+    $scope.getData();
+
+    $scope.setIsShow = function(id) {
+        $scope.param = ParamTransmit.getParam();
+        $scope.param.pollute_id = id;
+        $scope.param.is_show = $scope.param.val;
+        ConnectApi.start('post', 'admin/Stain/StainAuditing', $scope.param).then(function(response) {
+            var data = ConnectApi.data({ res: response });
+            if(data.code == 200) {
+                $scope.getData();
+            }
+        }, function(x) { 
+            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                layer.closeAll();
+            });
+        });
+    }
+
+
+    // {
+    //     "title": "", //相册标题
+    //     "id": 123, //相册id
+    //     "start": 0, //初始显示的图片序号，默认0
+    //     "data": [   //相册包含的图片，数组格式
+    //         {
+    //             "alt": "图片名",
+    //             "pid": 666, //图片id
+    //             "src": "", //原图地址
+    //             "thumb": "" //缩略图地址
+    //         }
+    //     ]
+    // }
+    $scope.getAlbum = function(data) {
+        data.id = data.pollute_id;
+        for(var i = 0; i < data.data.length; i++) {
+            data.data[i].alt = data.title;
+            data.data[i].pid = data.data[i].img_id;
+            data.data[i].src = $rootScope.rootUrl + data.data[i].img;
+            data.data[i].thumb = $rootScope.rootUrl + data.data[i].img_album;
+        }
+
+        layer.photos({
+            photos: data,
+            anim: 5
+        });
+    }
+
+
+    $scope.remove = function(id) {
+        $scope.param.pollute_id = id;
+        var index = layer.load(2);
+        ConnectApi.start('post', 'admin/Stain/StainDelete', $scope.param).then(function(response) {
+            var data = ConnectApi.data({ res: response, _index: index });
+            if(data.code == 200) {
+                $scope.getData();
+            }
+        }, function(x) { 
+            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                layer.closeAll();
+            });
+        });
+    }
+
+
+    $scope.search = function() {
+        $scope.getData();
+    }
+
+
+    $scope.goPage = function(id) {
+        $state.go('app.polluteDetails');
+        ParamTransmit.setParam({ pollute_id: id }, ['token', 'sysuser_id', 'tname'])
+    }
+
+
+}]);
+
+
+
+
+// 污染源详情
+App.controller('PolluteDetailsController', ["$scope", '$rootScope', 'ConnectApi', '$state', 'ParamTransmit', 'baiduMap', function($scope, $rootScope, ConnectApi, $state, ParamTransmit, baiduMap) {
+
+    $scope.param = ParamTransmit.getParam();
+    
+    $scope.getData = function() {
+        var index = layer.load(2);
+        ConnectApi.start('post', 'admin/Stain/StainDetails', $scope.param).then(function(response) {
+            var data = ConnectApi.data({ res: response, _index: index });
+            $scope.data = data.data;
+            if(data.code == 200) {
+                baiduMap.map_init($scope.data.lng, $scope.data.lat);
+                baiduMap.addMarker($scope.data.lng, $scope.data.lat, 0)
             }
         }, function(x) { 
             layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
@@ -1763,49 +2105,20 @@ App.controller('HomeController', ["$rootScope", "$scope", 'ConnectApi', '$state'
     }
     $scope.getData();
 
-}]);
-
-
-/* 用户管理 */
-App.controller('UserMgmtController', ["$scope", 'ConnectApi', '$state', 'ParamTransmit', function($scope, ConnectApi, $state, ParamTransmit) {
-
-    $scope.param = ParamTransmit.getParam();
-    
-    $scope.current_page = 1;
-    var getData = function() {
-        var index = layer.load(2);
-        $scope.param.page = $scope.current_page;
-        ConnectApi.start('post', 'admin/member/get_member_list', $scope.param).then(function(response) {
-            var data = ConnectApi.data({ res: response, _index: index });
-            $scope.data = data.data;
-            $scope.totalpage = data.data.total_page;
-        }, function(x) { 
-            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
-                layer.closeAll();
-            });
-        });
-    }
-    getData();
-
-    $scope.search = function() {
-
-    }
-
-    $scope.headerPath = 'app/img/header/';
 
     $scope.bgoSelectList = [
-        { val: 0, valName: '正常', color: 'green' },
-        { val: 1, valName: '锁定', color: 'red' },
+        { val: 'y', valName: '通过', color: 'green' },
+        { val: 'n', valName: '不通过', color: 'red' },
     ]
 
-    $scope.setIsLocked = function(id) {
+    $scope.setIsShow = function(id) {
         $scope.param = ParamTransmit.getParam();
-        $scope.param.user_id = id,
-        $scope.param.is_locked = $scope.param.val;
-        ConnectApi.start('post', 'admin/member/set_member', $scope.param).then(function(response) {
+        $scope.param.pollute_id = id;
+        $scope.param.is_show = $scope.param.val;
+        ConnectApi.start('post', 'admin/Stain/StainAuditing', $scope.param).then(function(response) {
             var data = ConnectApi.data({ res: response });
             if(data.code == 200) {
-                getData();
+                $scope.getData();
             }
         }, function(x) { 
             layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
@@ -1814,74 +2127,47 @@ App.controller('UserMgmtController', ["$scope", 'ConnectApi', '$state', 'ParamTr
         });
     }
 
-    $scope.goPage = function(id) {
-        $state.go('app.userInfo');
-        ParamTransmit.setParam({ user_id: id }, ['token', 'sysuser_id', 'tname'])
-    }
-
-    $scope.edit = function(id) {
-        $state.go('app.editUser');
-        ParamTransmit.setParam({ user_id: id }, ['token', 'sysuser_id', 'tname'])
-    }
-
-}]);
-
-
-// 用户详情
-App.controller('UserInfoController', ["$scope", 'ConnectApi', '$state', 'ParamTransmit', function($scope, ConnectApi, $state, ParamTransmit) {
-
-    $scope.is_lockedCFG = [
-        { val: 0, name: '正常', color: 'green' },
-        { val: 1, name: '锁定', color: 'red' },
-    ]
-
-    $scope.headerPath = 'app/img/header/';
-    $scope.param = ParamTransmit.getParam();
-    var getData = function() {
-        ConnectApi.start('post', 'admin/member/get_member_one', $scope.param).then(function(response) {
-            var data = ConnectApi.data({ res: response });
-            $scope.data = data.data;
-        }, function(x) { 
-            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
-                layer.closeAll();
-            });
-        });
-    }
-    getData();
-  
-    $scope.goPage = function(id) {
-        ParamTransmit.setParam({ user_id: id }, ['token', 'sysuser_id', 'tname'])
-    }
-
-}]);
-
-
-// 修改用户
-App.controller('EditUserController', ["$scope", 'ConnectApi', '$state', 'ParamTransmit', function($scope, ConnectApi, $state, ParamTransmit) {
-
-    $scope.param = ParamTransmit.getParam();
-    var getData = function() {
-        ConnectApi.start('post', 'admin/member/get_member_one', $scope.param).then(function(response) {
-            var data = ConnectApi.data({ res: response });
-            $scope.data = data.data;
-        }, function(x) { 
-            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
-                layer.closeAll();
-            });
-        });
-    }
-    getData();
-  
-    $scope.save = function() {
-        ConnectApi.start('post', 'admin/member/set_member', $scope.param).then(function(response) {
+    $scope.assessAdd = function() { // 污染源评估
+        ConnectApi.start('post', 'admin/Stain/AssessAdd', $scope.param).then(function(response) {
             var data = ConnectApi.data({ res: response });
             if(data.code == 200) {
-                layer.msg("修改成功！");
+                $scope.getAssessList();
             }
         }, function(x) { 
             layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
                 layer.closeAll();
             });
+        });
+    }
+
+    $scope.current_page = 1;
+    $scope.getAssessList = function() { // 评估列表
+        var index = layer.load(2);
+        $scope.param.page = $scope.current_page;
+        ConnectApi.start('post', 'admin/Stain/AssessList', $scope.param).then(function(response) {
+            var data = ConnectApi.data({ res: response, _index: index });
+            $scope.assessList = data.data;
+            $scope.totalpage = Math.ceil(data.data.total / data.data.per_page);
+        }, function(x) { 
+            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
+                layer.closeAll();
+            });
+        });
+    } 
+    $scope.getAssessList();
+
+    $scope.getAlbum = function(data, index) {
+        data.id = data.pollute_id;
+        data.start = index;
+        for(var i = 0; i < data.data.length; i++) {
+            data.data[i].alt = data.title;
+            data.data[i].pid = data.data[i].img_id;
+            data.data[i].src = $rootScope.rootUrl + data.data[i].img;
+            data.data[i].thumb = $rootScope.rootUrl + data.data[i].img_album;
+        }
+        layer.photos({
+            photos: data,
+            anim: 5
         });
     }
 
@@ -1909,42 +2195,6 @@ App.controller('BaseConfigController', ["$scope", 'ConnectApi', '$state', 'Param
     $scope.set = function() {
         $scope.param = ParamTransmit.getParam();
         ConnectApi.start('post', 'admin/settings/set_pubconfig', $scope.param).then(function(response) {
-            var data = ConnectApi.data({ res: response });
-            if(data.code == 200) {
-                layer.msg("修改成功！");
-            }
-        }, function(x) { 
-            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
-                layer.closeAll();
-            });
-        });
-    }
-
-}]);
-
-
-
-// 小狗升级配置
-App.controller('Other1ConfigController', ["$scope", 'ConnectApi', '$state', 'ParamTransmit', function($scope, ConnectApi, $state, ParamTransmit) {
-
-    $scope.param = ParamTransmit.getParam();
-    var getData = function() {
-        var index = layer.load(2);
-        ConnectApi.start('post', 'admin/settings/get_doglevel', $scope.param).then(function(response) {
-            var data = ConnectApi.data({ res: response, _index: index });
-            $scope.data = data.data;
-        }, function(x) { 
-            layer.alert("服务器异常，请稍后再试！", {closeBtn: 0, icon: 5}, function() {
-                layer.closeAll();
-            });
-        });
-    }
-    getData();
-
-    $scope.save = function() {
-        $scope.param = ParamTransmit.getParam();
-        $scope.param.dogLevel = $scope.data;
-        ConnectApi.start('post', 'admin/settings/set_doglevel', $scope.param).then(function(response) {
             var data = ConnectApi.data({ res: response });
             if(data.code == 200) {
                 layer.msg("修改成功！");
