@@ -33,10 +33,10 @@ App.run(["$rootScope", "$state", "$stateParams",  '$window', '$templateCache', f
     $rootScope.$stateParams = $stateParams;
     $rootScope.$storage = $window.localStorage;
 
-    // $rootScope.rootUrl = 'http://schoolms.thinktorch.cn/public/index.php/';
-    // $rootScope.rootImgUrl = 'http://schoolms.thinktorch.cn/201612PalmEP/';
-    $rootScope.rootUrl = 'http://192.168.1.200/201612PalmEP/public/';
-    $rootScope.rootImgUrl = 'http://192.168.1.200/201612PalmEP/public/';
+    $rootScope.rootUrl = 'http://pollute.thinktorch.cn/public/';
+    $rootScope.rootImgUrl = 'http://pollute.thinktorch.cn/public/';
+    // $rootScope.rootUrl = 'http://192.168.1.200/201612PalmEP/public/';
+    // $rootScope.rootImgUrl = 'http://192.168.1.200/201612PalmEP/public/';
     // 禁用模板缓存
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
         if (typeof(toState) !== 'undefined'){

@@ -31,9 +31,9 @@
                                 <td class="form-title" style="width: 100px;">污染等级：</td>
                                 <td>
                                     <ng-rate-it ng-model="data.level" read-only="true"  resetable="false" style="float: left;"></ng-rate-it>
-                                    <span style="margin-left: 10px;color: red;" ng-if="data.level <= 2">严重污染</span>
-                                    <span style="margin-left: 10px;color: orange;" ng-if="data.level <= 4 && data.level > 2">改善中</span>
-                                    <span style="margin-left: 10px;color: green;" ng-if="data.level > 4">治理有效</span>
+                                    <span style="margin-left: 10px;color: red;" ng-if="data.level < 3">严重污染</span>
+                                    <span style="margin-left: 10px;color: orange;" ng-if="data.level == 3">改善中</span>
+                                    <span style="margin-left: 10px;color: green;" ng-if="data.level > 3">治理有效</span>
                                 </td>
                             </tr>
                             <tr>
@@ -76,10 +76,10 @@
                             <tr>
                                 <td class="form-title">评估：</td>
                                 <td>
-                                    <ng-rate-it ng-model="param.level" resetable="false" style="float: left;"></ng-rate-it>
-                                    <span style="margin-left: 10px;color: red;" ng-if="param.level <= 2">严重污染</span>
-                                    <span style="margin-left: 10px;color: orange;" ng-if="param.level <= 3 && param.level > 2">改善中</span>
-                                    <span style="margin-left: 10px;color: green;" ng-if="param.level > 4">治理有效</span>
+                                    <ng-rate-it ng-model="param.level" resetable="false" style="float: left;" step="1"></ng-rate-it>
+                                    <span style="margin-left: 10px;color: red;" ng-if="param.level < 3">严重污染</span>
+                                    <span style="margin-left: 10px;color: orange;" ng-if="param.level == 3">改善中</span>
+                                    <span style="margin-left: 10px;color: green;" ng-if="param.level > 3">治理有效</span>
                                 </td>
                             </tr>
                             <tr>

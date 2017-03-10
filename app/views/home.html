@@ -12,7 +12,7 @@
         ifr.src = 'control.html?random=' + (new Date().getTime());
         $('#ifr').on("load",function() {
             var _height = $(document).height() - 160;
-            $('#ifr').height(_height);
+            _height < 600 ? $('#ifr').height(600) : $('#ifr').height(_height);
         });
     </script>
 </div>

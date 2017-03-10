@@ -5,7 +5,7 @@
             <li>
                 <div class="bgo-search">
                     <form ng-submit="search()">
-                        <input type="text" class="bgo-input" ng-model="param.title" placeholder="请输入污染源标题">
+                        <input type="text" class="bgo-input" ng-model="param.search_key" placeholder="请输入污染源标题">
                         <button type="submit" class="btn btn-primary bgo-button">查找</button>
                     </form>
                 </div>
@@ -31,8 +31,8 @@
                     <td colspan="10">暂无数据</td>
                 </tr>
                 <tr ng-repeat="d in data.data">
-                    <td ng-bind="$index + 1"></td>
-                    <td ng-bind="d.title"></td>
+                    <td ng-bind="data.per_page * (current_page-1) + $index + 1"></td>
+                    <td ng-bind="d.title" class="txtOver"></td>
                     <td>
                         <img class="bgo-header" ng-src="{{ rootImgUrl + d.Image.data[0].img }}" title="查看相册" ng-click="getAlbum(d.Image)">
                     </td>
@@ -49,8 +49,8 @@
                         <span ng-bind="d.company_name"></span> - 
                         <span ng-bind="d.tname"></span>
                     </td>
-                    <td ng-bind="d.add_time * 1000 | date: 'yyyy-MM-dd'"></td>
-                    <td>
+                    <td ng-bind="d.create_time * 1000 | date: 'yyyy-MM-dd'"></td>
+                    <td class="txtOver">
                         <button type="button" class="btn btn-info bgo-button" ng-click="goPage(d.pollute_id)">详情</button>
                         <button type="button" class="btn btn-danger bgo-button" ng-click="remove(d.pollute_id)">删除</button>
                     </td>

@@ -91,7 +91,7 @@
                     <td colspan="9">暂无数据</td>
                 </tr>
                 <tr ng-repeat="d in data.data">
-                    <td ng-bind="$index + 1"></td>
+                    <td ng-bind="data.per_page * (current_page-1) + $index + 1"></td>
                     <td>
                         <img class="bgo-header-circle" ng-src="{{ rootImgUrl + d.header }}" alt="">
                     </td>

@@ -4,6 +4,7 @@
  * @Author: xuguanlong
  * @Date:   2015-11-03 16:10:24
  * @Last Modified by:   xuguanlong
+ * @BGONLINE.CN 在此基础上进行升级修复
  * @Last Modified time: 2015-11-09 15:18:00
  */
 /**
