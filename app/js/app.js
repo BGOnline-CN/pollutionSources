@@ -33,8 +33,8 @@ App.run(["$rootScope", "$state", "$stateParams",  '$window', '$templateCache', f
     $rootScope.$stateParams = $stateParams;
     $rootScope.$storage = $window.localStorage;
 
-    $rootScope.rootUrl = 'http://pollute.thinktorch.cn/public/';
-    $rootScope.rootImgUrl = 'http://pollute.thinktorch.cn/public/';
+    $rootScope.rootUrl = 'http://pollute.thinktorch.cn/';
+    $rootScope.rootImgUrl = 'http://pollute.thinktorch.cn/';
     // $rootScope.rootUrl = 'http://192.168.1.200/201612PalmEP/public/';
     // $rootScope.rootImgUrl = 'http://192.168.1.200/201612PalmEP/public/';
     // 禁用模板缓存
@@ -1224,7 +1224,7 @@ App.directive('bgoSelect', function() { // 下拉选择器
                   '</div>',
         controller: function($scope, ParamTransmit) {
             $scope.getVal = function(val) {
-                ParamTransmit.setParam({ val }, ['token', 'user_id', 'tname']);
+                ParamTransmit.setParam({ val }, ['token', 'tname', 'company_id']);
             }
         }
                 
@@ -1251,7 +1251,7 @@ App.directive('inputAutoSubmit', function() { // 输入框自动提交
                 if(newVal != oldVal && newVal) {
                     if(timeout) $timeout.cancel(timeout);
                     timeout = $timeout(function() {
-                        ParamTransmit.setParam({ key: $scope.key, val: $scope.val }, ['token', 'sysuser_id', 'tname']);
+                        ParamTransmit.setParam({ key: $scope.key, val: $scope.val }, ['token', 'tname', 'company_id']);
                         $scope.means();
                     }, 2000);
                 }
@@ -1780,7 +1780,7 @@ App.controller('LoginController', ["$rootScope", "$scope", 'ConnectApi', '$state
               var token = $scope.data.token;
               var company_id = $scope.data.company_id;
               var tname = $scope.data.tname;
-              ParamTransmit.setParam({ token, company_id, tname }, ['token', 'company_id', 'tname']);
+              ParamTransmit.setParam({ token, company_id, tname }, ['token', 'tname', 'company_id']);
               $state.go('app.home');
           }
       }, function(x) { 
@@ -2074,7 +2074,7 @@ App.controller('PolluteMgmtController', ["$scope", '$rootScope', 'ConnectApi', '
 
     $scope.goPage = function(id) {
         $state.go('app.polluteDetails');
-        ParamTransmit.setParam({ pollute_id: id }, ['token', 'sysuser_id', 'tname'])
+        ParamTransmit.setParam({ pollute_id: id }, ['token', 'tname', 'pollute_id', 'company_id']);
     }
 
 
@@ -2115,6 +2115,7 @@ App.controller('PolluteDetailsController', ["$scope", '$rootScope', 'ConnectApi'
         $scope.param = ParamTransmit.getParam();
         $scope.param.pollute_id = id;
         $scope.param.is_show = $scope.param.val;
+        ParamTransmit.setParam({ pollute_id: id }, ['token', 'tname', 'pollute_id', 'company_id']);
         ConnectApi.start('post', 'admin/Stain/StainAuditing', $scope.param).then(function(response) {
             var data = ConnectApi.data({ res: response });
             if(data.code == 200) {

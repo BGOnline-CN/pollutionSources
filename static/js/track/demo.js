@@ -212,7 +212,8 @@ define('track/urls', [], function () {
             after = after || function () {};
             var p = '?service_id=' + ServiceId + 
                    '&ak=' + Test_ak + 
-                   '&mcode=' + mcode
+                   '&mcode=' + mcode +
+                   '&company_id=' + JSON.parse(sessionStorage.paramSession).company_id
             delete params.service_id;
             delete params.ak;
             delete params.mcode;
