@@ -2283,15 +2283,15 @@ define('track/draw', ['track/canvas', 'track/animation', 'track/util'], function
                 return;
             }
             var props = {
-                locTime: poi.loc_time,
-                location: poi.location,
+                locTime: poi.loc_time ? poi.loc_time : poi.realtime_point.loc_time,
+                location: poi.location ? poi.location : poi.realtime_point.location,
                 name: poi.user_real_name
             }
             var txt1 = props.name;
             var txt2_1 = '最新位置 :  经度  ( ' + props.location[0].toFixed(6) + ' )';
-            var txt2_2 = '纬度  ( ' + poi.location[1].toFixed(6) + ' )';
+            var txt2_2 = '纬度  ( ' + props.location[1].toFixed(6) + ' )';
             var txt3 = '定位时间 : ' + Util.js_date_time(props.locTime);
-            var point = point = new BMap.Point(poi.location[0], poi.location[1]);
+            var point = point = new BMap.Point(props.location[0], props.location[1]);
             var pixel = this.map.pointToPixel(point);
             var width = 194;
             var height = 90;
